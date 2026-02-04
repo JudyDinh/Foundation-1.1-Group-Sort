@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Sort</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {"theme":{"extend":{"colors":{"primary":"#007AFF","secondary":"#34C759","accent":"#FF9500","destructive":"#FF3B30","macos_bg_light":"#F6F6F6","macos_bg_dark":"#2D2D2D","macos_secondary_bg_light":"#FFFFFF","macos_secondary_bg_dark":"#3C3C3C","macos_tertiary_bg_light":"#EFEFEF","macos_tertiary_bg_dark":"#232323","macos_label_light":"#000000","macos_label_dark":"#FFFFFF","macos_secondary_label_light":"rgba(60, 60, 67, 0.6)","macos_secondary_label_dark":"rgba(235, 235, 245, 0.6)","macos_separator_light":"rgba(60, 60, 67, 0.15)","macos_separator_dark":"rgba(84, 84, 88, 0.4)","macos_placeholder_light":"rgba(60, 60, 67, 0.3)","macos_placeholder_dark":"rgba(235, 235, 245, 0.3)","macos_control_bg_light":"#FFFFFF","macos_control_bg_dark":"#5A5A5A","macos_control_border_light":"#CCCCCC","macos_control_border_dark":"#4A4A4A"}}},"darkMode":"class"}
+    </script>
+    <style> /* Ensure buttons are clickable */ .standalone-actions button { pointer-events: auto !important; } </style>
+</head>
+<body class="p-4 sm:p-6 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    <h1 class="text-2xl font-semibold text-center mb-4">Group Sort</h1>
+    <div id="standalone-activity" class="max-w-4xl mx-auto bg-white dark:bg-gray-700 p-4 rounded shadow">
+        <div class="group-sort-container"><div class="group-sort-categories grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div class="group-sort-category-box border border-macos_separator_light dark:border-macos_separator_dark rounded-lg p-3 bg-macos_tertiary_bg_light dark:bg-macos_tertiary_bg_dark min-h-[150px] flex flex-col">
+                <h4 class="category-title font-semibold text-center mb-2 pb-2 border-b border-macos_separator_light dark:border-macos_separator_dark text-primary dark:text-blue-400">Countable</h4>
+                <div class="category-dropzone flex-grow p-2 border-2 border-dashed border-macos_control_border_light dark:border-macos_control_border_dark rounded space-y-1.5" data-category-id="cat-0" aria-label="Drop items for category Countable">
+                    <!-- Dropped items appear here -->
+                </div>
+            </div>
+        
+            <div class="group-sort-category-box border border-macos_separator_light dark:border-macos_separator_dark rounded-lg p-3 bg-macos_tertiary_bg_light dark:bg-macos_tertiary_bg_dark min-h-[150px] flex flex-col">
+                <h4 class="category-title font-semibold text-center mb-2 pb-2 border-b border-macos_separator_light dark:border-macos_separator_dark text-primary dark:text-blue-400">Uncountable</h4>
+                <div class="category-dropzone flex-grow p-2 border-2 border-dashed border-macos_control_border_light dark:border-macos_control_border_dark rounded space-y-1.5" data-category-id="cat-1" aria-label="Drop items for category Uncountable">
+                    <!-- Dropped items appear here -->
+                </div>
+            </div>
+        
+            <div class="group-sort-category-box border border-macos_separator_light dark:border-macos_separator_dark rounded-lg p-3 bg-macos_tertiary_bg_light dark:bg-macos_tertiary_bg_dark min-h-[150px] flex flex-col">
+                <h4 class="category-title font-semibold text-center mb-2 pb-2 border-b border-macos_separator_light dark:border-macos_separator_dark text-primary dark:text-blue-400">I dont know</h4>
+                <div class="category-dropzone flex-grow p-2 border-2 border-dashed border-macos_control_border_light dark:border-macos_control_border_dark rounded space-y-1.5" data-category-id="cat-2" aria-label="Drop items for category I dont know">
+                    <!-- Dropped items appear here -->
+                </div>
+            </div>
+        </div><div id="group-sort-items-pool" class="p-4 border border-macos_separator_light dark:border-macos_separator_dark rounded-lg bg-macos_tertiary_bg_light dark:bg-macos_tertiary_bg_dark min-h-[100px]">
+        <h4 class="text-sm font-medium text-center mb-3 text-macos_secondary_label_light dark:text-macos_secondary_label_dark">Drag items to the correct category above:</h4>
+        <div class="flex flex-wrap justify-center gap-2">
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-31" data-item-id="item-31" data-correct-category-id="cat-1" aria-grabbed="false">
+                wind
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-26" data-item-id="item-26" data-correct-category-id="cat-1" aria-grabbed="false">
+                garbage
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-21" data-item-id="item-21" data-correct-category-id="cat-1" aria-grabbed="false">
+                flour
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-29" data-item-id="item-29" data-correct-category-id="cat-1" aria-grabbed="false">
+                sunshine
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-14" data-item-id="item-14" data-correct-category-id="cat-1" aria-grabbed="false">
+                butter
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-1" data-item-id="item-1" data-correct-category-id="cat-0" aria-grabbed="false">
+                coffee table
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-12" data-item-id="item-12" data-correct-category-id="cat-1" aria-grabbed="false">
+                milk
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-4" data-item-id="item-4" data-correct-category-id="cat-0" aria-grabbed="false">
+                stove
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-13" data-item-id="item-13" data-correct-category-id="cat-1" aria-grabbed="false">
+                oil
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-18" data-item-id="item-18" data-correct-category-id="cat-1" aria-grabbed="false">
+                pepper
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-33" data-item-id="item-33" data-correct-category-id="cat-1" aria-grabbed="false">
+                silver
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-24" data-item-id="item-24" data-correct-category-id="cat-1" aria-grabbed="false">
+                clothing
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-9" data-item-id="item-9" data-correct-category-id="cat-0" aria-grabbed="false">
+                toilet
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-35" data-item-id="item-35" data-correct-category-id="cat-2" aria-grabbed="false">
+                ^.^
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-32" data-item-id="item-32" data-correct-category-id="cat-1" aria-grabbed="false">
+                gold
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-30" data-item-id="item-30" data-correct-category-id="cat-1" aria-grabbed="false">
+                air
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-34" data-item-id="item-34" data-correct-category-id="cat-1" aria-grabbed="false">
+                money
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-23" data-item-id="item-23" data-correct-category-id="cat-1" aria-grabbed="false">
+                furniture
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-17" data-item-id="item-17" data-correct-category-id="cat-1" aria-grabbed="false">
+                salt
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-8" data-item-id="item-8" data-correct-category-id="cat-0" aria-grabbed="false">
+                sink
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-5" data-item-id="item-5" data-correct-category-id="cat-0" aria-grabbed="false">
+                microwave
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-28" data-item-id="item-28" data-correct-category-id="cat-1" aria-grabbed="false">
+                rain
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-15" data-item-id="item-15" data-correct-category-id="cat-1" aria-grabbed="false">
+                rice
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-20" data-item-id="item-20" data-correct-category-id="cat-1" aria-grabbed="false">
+                cheese
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-10" data-item-id="item-10" data-correct-category-id="cat-0" aria-grabbed="false">
+                card
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-6" data-item-id="item-6" data-correct-category-id="cat-0" aria-grabbed="false">
+                bed
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-22" data-item-id="item-22" data-correct-category-id="cat-1" aria-grabbed="false">
+                meat
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-2" data-item-id="item-2" data-correct-category-id="cat-0" aria-grabbed="false">
+                television
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-16" data-item-id="item-16" data-correct-category-id="cat-1" aria-grabbed="false">
+                sugar
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-11" data-item-id="item-11" data-correct-category-id="cat-0" aria-grabbed="false">
+                lipstick
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-27" data-item-id="item-27" data-correct-category-id="cat-1" aria-grabbed="false">
+                noise
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-19" data-item-id="item-19" data-correct-category-id="cat-1" aria-grabbed="false">
+                bread
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-3" data-item-id="item-3" data-correct-category-id="cat-0" aria-grabbed="false">
+                fridge
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-25" data-item-id="item-25" data-correct-category-id="cat-1" aria-grabbed="false">
+                electricity
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-0" data-item-id="item-0" data-correct-category-id="cat-0" aria-grabbed="false">
+                sofa
+            </div>
+        
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm" draggable="true" id="item-7" data-item-id="item-7" data-correct-category-id="cat-0" aria-grabbed="false">
+                wardrobe
+            </div>
+        </div></div>
+        <div class="groupsort-actions mt-5 pt-4 border-t border-macos_separator_light dark:border-macos_separator_dark flex flex-wrap justify-center gap-3">
+            <button id="groupsort-check-btn" class="px-4 py-1.5 text-sm bg-secondary text-white rounded-md shadow-sm hover:brightness-110">Check Answers</button>
+            <button id="groupsort-show-btn" class="px-4 py-1.5 text-sm bg-primary text-white rounded-md shadow-sm hover:brightness-110">Show Answers</button>
+            <!-- Add other buttons like Reset if needed -->
+        </div>
+    </div>
+        
+    </div>
+
+    <script type="module">
+        // Embed ALL JavaScript here
+        
+    // --- Embedded Template Code for group-sort ---
+    const groupsortTemplate = (() => {
+        try {
+            // Define functions directly in this scope
+            // --- START OF FILE js/templates/groupSort.js ---
+
+/**
+ * Group Sort Template Module
+ *
+ * Users drag items into their corresponding category boxes.
+ */
+
+// --- Helper: shuffleArray ---
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// --- Exported Module Functions ---
+
+/**
+ * Parses input text into categories and items.
+ * Expected format: Category Name | Item 1 | Item 2 | ... per line.
+ * @param {string} text - User input text.
+ * @returns {object} - { categories: Array<{id: string, name: string}>, items: Array<{id: string, text: string, categoryId: string}> }
+ */
+function parseInput(text) {
+    const categories = [];
+    const items = [];
+    let itemCounter = 0;
+    const lines = text.split('\n').filter(line => line.trim().length > 0);
+
+    lines.forEach((line, index) => {
+        const parts = line.split('|').map(part => part.trim());
+
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+            const categoryName = parts[0];
+            const categoryId = `cat-${index}`;
+            categories.push({ id: categoryId, name: categoryName });
+
+            const categoryItems = parts.slice(1).filter(item => item.length > 0);
+            categoryItems.forEach(itemText => {
+                items.push({
+                    id: `item-${itemCounter++}`,
+                    text: itemText,
+                    categoryId: categoryId // Link item to its correct category
+                });
+            });
+        } else {
+            console.warn(`GroupSort: Skipping line ${index + 1} (invalid format: Expected 'Category | Item1 | ...'): "${line}"`);
+        }
+    });
+
+    return { categories, items };
+}
+
+/**
+ * Generates the HTML for the Group Sort activity.
+ * Creates category dropzones and a list of draggable items.
+ * @param {object} parsedData - The object { categories, items } from parseInput.
+ * @returns {object} - { html: string, state: { categories: Array, items: Array } }
+ */
+function generateHTML(parsedData) {
+    const { categories, items } = parsedData;
+
+    if (!categories || categories.length === 0 || !items || items.length === 0) {
+        return {
+            html: '<p class="p-4 text-center text-macos_secondary_label_light dark:text-macos_secondary_label_dark">Please enter data using the format: Category Name | Item 1 | Item 2 | ...</p>',
+            state: { categories: [], items: [] }
+        };
+    }
+
+    // Shuffle items before display
+    const shuffledItems = shuffleArray([...items]);
+
+    // Build Category Dropzones
+    let categoriesHTML = '<div class="group-sort-categories grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">'; // Adjust columns as needed
+    categories.forEach(category => {
+        categoriesHTML += `
+            <div class="group-sort-category-box border border-macos_separator_light dark:border-macos_separator_dark rounded-lg p-3 bg-macos_tertiary_bg_light dark:bg-macos_tertiary_bg_dark min-h-[150px] flex flex-col">
+                <h4 class="category-title font-semibold text-center mb-2 pb-2 border-b border-macos_separator_light dark:border-macos_separator_dark text-primary dark:text-blue-400">${category.name}</h4>
+                <div class="category-dropzone flex-grow p-2 border-2 border-dashed border-macos_control_border_light dark:border-macos_control_border_dark rounded space-y-1.5"
+                     data-category-id="${category.id}"
+                     aria-label="Drop items for category ${category.name}">
+                    <!-- Dropped items appear here -->
+                </div>
+            </div>
+        `;
+    });
+    categoriesHTML += '</div>';
+
+    // Build Draggable Items List
+    let itemsHTML = `<div id="group-sort-items-pool" class="p-4 border border-macos_separator_light dark:border-macos_separator_dark rounded-lg bg-macos_tertiary_bg_light dark:bg-macos_tertiary_bg_dark min-h-[100px]">
+        <h4 class="text-sm font-medium text-center mb-3 text-macos_secondary_label_light dark:text-macos_secondary_label_dark">Drag items to the correct category above:</h4>
+        <div class="flex flex-wrap justify-center gap-2">`; // Use flex-wrap for items pool
+    shuffledItems.forEach(item => {
+        itemsHTML += `
+            <div class="group-sort-item p-2 bg-macos_secondary_bg_light dark:bg-macos_secondary_bg_dark border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab text-sm"
+                 draggable="true"
+                 id="${item.id}"
+                 data-item-id="${item.id}"
+                 data-correct-category-id="${item.categoryId}"
+                 aria-grabbed="false">
+                ${item.text}
+            </div>
+        `;
+    });
+    itemsHTML += '</div></div>';
+
+    // --- *NEW* Action Buttons specific to this template ---
+    const actionButtonsHTML = `
+        <div class="groupsort-actions mt-5 pt-4 border-t border-macos_separator_light dark:border-macos_separator_dark flex flex-wrap justify-center gap-3">
+            <button id="groupsort-check-btn" class="px-4 py-1.5 text-sm bg-secondary text-white rounded-md shadow-sm hover:brightness-110">Check Answers</button>
+            <button id="groupsort-show-btn" class="px-4 py-1.5 text-sm bg-primary text-white rounded-md shadow-sm hover:brightness-110">Show Answers</button>
+            <!-- Add other buttons like Reset if needed -->
+        </div>
+    `;
+    // --- END Action Buttons ---
+
+    // Combine categories, items pool, AND action buttons
+    const finalHTML = `<div class="group-sort-container">${categoriesHTML}${itemsHTML}${actionButtonsHTML}</div>`; 
+
+    return {
+        html: finalHTML,
+        state: { categories, items } // Pass original parsed data
+    };
+}
+
+/**
+ * Adds drag and drop interactivity.
+ * @param {HTMLElement} activityElement - The container element holding the HTML.
+ * @param {object} state - The state object from generateHTML.
+ */
+function addInteractivity(activityElement, state) {
+    if (!activityElement || !state || !state.items || !state.categories) return;
+
+    const itemsPool = activityElement.querySelector('#group-sort-items-pool div'); // Inner div with items
+    const dropzones = activityElement.querySelectorAll('.category-dropzone');
+    const draggableItems = activityElement.querySelectorAll('.group-sort-item[draggable="true"]');
+    let draggedItem = null;
+
+    draggableItems.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedItem = e.target;
+            e.dataTransfer.setData('text/plain', e.target.id);
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => {
+                draggedItem?.classList.add('opacity-50'); // Style while dragging
+                draggedItem?.setAttribute('aria-grabbed', 'true');
+            }, 0);
+        });
+
+        item.addEventListener('dragend', () => {
+             // Check if draggedItem still exists before removing class
+            if (draggedItem) {
+                draggedItem.classList.remove('opacity-50');
+                draggedItem.setAttribute('aria-grabbed', 'false');
+            }
+            draggedItem = null;
+        });
+    });
+
+    dropzones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Allow drop
+            zone.classList.add('bg-blue-100', 'dark:bg-blue-900', 'dark:bg-opacity-20'); // Highlight drop zone
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        zone.addEventListener('dragleave', (e) => {
+             // Check if not leaving to a child element within the zone
+            if (!zone.contains(e.relatedTarget)) {
+                zone.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'dark:bg-opacity-20');
+            }
+        });
+
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'dark:bg-opacity-20');
+
+            if (!draggedItem) return;
+            const itemId = e.dataTransfer.getData('text/plain');
+            // Query activityElement to ensure we get the right item, even if it was moved
+            const droppedItemElement = activityElement.querySelector(`#${itemId}`);
+
+            if (droppedItemElement && droppedItemElement !== zone) { // Don't drop into itself
+                 // Check if the target is the zone itself or an element inside it
+                if (e.target === zone || zone.contains(e.target)) {
+                    zone.appendChild(droppedItemElement); // Append to the drop zone
+                    // Clear any previous correctness styling when moved
+                     droppedItemElement.classList.remove('correct-placement', 'incorrect-placement');
+                    draggedItem = null; // Reset after successful drop processing
+                }
+            }
+        });
+    });
+
+     // Allow dragging items BACK to the pool
+     if (itemsPool) {
+         itemsPool.parentElement.addEventListener('dragover', (e) => { // Listener on the outer container of the pool
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            itemsPool.parentElement.classList.add('bg-gray-200','dark:bg-gray-700'); // Highlight pool
+         });
+         itemsPool.parentElement.addEventListener('dragleave', (e) => {
+             if (!itemsPool.parentElement.contains(e.relatedTarget)) {
+                 itemsPool.parentElement.classList.remove('bg-gray-200','dark:bg-gray-700');
+             }
+         });
+          itemsPool.parentElement.addEventListener('drop', (e) => {
+             e.preventDefault();
+              itemsPool.parentElement.classList.remove('bg-gray-200','dark:bg-gray-700');
+             if (!draggedItem) return;
+             const itemId = e.dataTransfer.getData('text/plain');
+             const droppedItemElement = activityElement.querySelector(`#${itemId}`);
+
+              // Check if the target is the pool container or the inner div
+              if (droppedItemElement && (e.target === itemsPool.parentElement || e.target === itemsPool || itemsPool.contains(e.target))) {
+                   // Move item back to the pool's inner div
+                   itemsPool.appendChild(droppedItemElement);
+                    // Clear correctness styling
+                    droppedItemElement.classList.remove('correct-placement', 'incorrect-placement');
+                   draggedItem = null;
+               }
+          });
+     }
+     // --- *NEW* Add listeners for the template-generated action buttons ---
+    const checkButton = activityElement.querySelector('#groupsort-check-btn');
+    const showButton = activityElement.querySelector('#groupsort-show-btn');
+    // Add selectors for other buttons (like Reset) if you add them
+
+    if (checkButton) {
+        checkButton.addEventListener('click', () => checkAnswers(activityElement, state));
+    } else {
+        console.warn("GroupSort addInteractivity: Could not find #groupsort-check-btn");
+    }
+
+    if (showButton) {
+        showButton.addEventListener('click', () => {
+            showAnswers(activityElement, state);
+            // Disable buttons after showing answers
+            if(showButton) showButton.disabled = true;
+            if(checkButton) checkButton.disabled = true;
+            // Disable reset button too if added
+        });
+    } else {
+        console.warn("GroupSort addInteractivity: Could not find #groupsort-show-btn");
+    }
+    // Add listeners for other buttons (like Reset) if you add them
+}
+
+/**
+ * Checks if items are placed in the correct categories and provides visual feedback.
+ * @param {HTMLElement} activityElement - The container element.
+ * @param {object} state - The state object.
+ */
+function checkAnswers(activityElement, state) {
+    if (!activityElement || !state) return;
+    console.log("GroupSort: Checking answers.");
+
+    const dropzones = activityElement.querySelectorAll('.category-dropzone');
+
+    dropzones.forEach(zone => {
+        const zoneCategoryId = zone.dataset.categoryId;
+        const itemsInZone = zone.querySelectorAll('.group-sort-item');
+
+        itemsInZone.forEach(item => {
+            const itemCorrectCategoryId = item.dataset.correctCategoryId;
+            // Clear previous styles first
+            item.classList.remove('correct-placement', 'incorrect-placement');
+
+            if (itemCorrectCategoryId === zoneCategoryId) {
+                item.classList.add('correct-placement', 'border-secondary', 'dark:border-green-400'); // Add green border
+            } else {
+                item.classList.add('incorrect-placement', 'border-destructive', 'dark:border-red-400'); // Add red border
+            }
+        });
+    });
+
+     // Also check items remaining in the pool 
+     const poolItems = activityElement.querySelectorAll('#group-sort-items-pool .group-sort-item');
+     poolItems.forEach(item => {
+          item.classList.remove('correct-placement'); // Clear correct just in case
+          item.classList.add('incorrect-placement', 'border-destructive', 'dark:border-red-400'); // Mark pool items as incorrect placement
+     });
+}
+
+/**
+ * Moves all items to their correct category dropzones and makes them non-draggable.
+ * @param {HTMLElement} activityElement - The container element.
+ * @param {object} state - The state object containing `state.items`.
+ */
+function showAnswers(activityElement, state) {
+     if (!activityElement || !state || !state.items) return;
+     console.log("GroupSort: Showing answers.");
+
+     const allItems = activityElement.querySelectorAll('.group-sort-item');
+
+     allItems.forEach(item => {
+         const itemId = item.dataset.itemId;
+         const correctCategoryId = item.dataset.correctCategoryId;
+         const correctDropzone = activityElement.querySelector(`.category-dropzone[data-category-id="${correctCategoryId}"]`);
+
+         // Clear feedback styles and disable dragging
+         item.classList.remove('correct-placement', 'incorrect-placement', 'border-secondary', 'dark:border-green-400', 'border-destructive', 'dark:border-red-400', 'opacity-50');
+         item.setAttribute('draggable', 'false');
+         item.style.cursor = 'default'; // Change cursor
+
+         if (correctDropzone) {
+             // Move item to the correct zone
+             correctDropzone.appendChild(item);
+         } else {
+             console.warn(`GroupSort ShowAnswers: Could not find dropzone for category ID: ${correctCategoryId}`);
+             // Optionally move it back to the pool if zone is missing
+             const itemsPool = activityElement.querySelector('#group-sort-items-pool div');
+             itemsPool?.appendChild(item);
+         }
+     });
+
+
+}
+
+
+            // --- NOW, explicitly create and return the object ---
+            const moduleInterface = {
+                parseInput: (typeof parseInput !== 'undefined' ? parseInput : undefined),
+                generateHTML: (typeof generateHTML !== 'undefined' ? generateHTML : undefined),
+                addInteractivity: (typeof addInteractivity !== 'undefined' ? addInteractivity : undefined),
+                checkAnswers: (typeof checkAnswers !== 'undefined' ? checkAnswers : undefined),
+                showAnswers: (typeof showAnswers !== 'undefined' ? showAnswers : undefined),
+                // Add other potential functions exported by templates here
+                // For example (uncomment/add as needed):
+                // rescramble: (typeof rescramble !== 'undefined' ? rescramble : undefined),
+                // rejumble: (typeof rejumble !== 'undefined' ? rejumble : undefined),
+                // resetActivity: (typeof resetActivity !== 'undefined' ? resetActivity : undefined),
+            };
+
+            // Check if essential functions exist
+            if (!moduleInterface.parseInput || !moduleInterface.generateHTML || !moduleInterface.addInteractivity) {
+                 console.error('Essential functions (parseInput, generateHTML, addInteractivity) missing in embedded code for group-sort');
+                 return { // Return a dummy object to prevent further errors
+                     parseInput: () => null,
+                     generateHTML: () => ({html: '<p style="color:red">Error loading template.</p>', state: {}}),
+                     addInteractivity: () => {},
+                     checkAnswers: () => {},
+                     showAnswers: () => {}
+                 };
+            }
+
+            console.log('Successfully created embedded module interface for group-sort');
+            return moduleInterface; // Return the created object
+
+        } catch (e) {
+             console.error("Error executing embedded template module code for group-sort:", e);
+             return {}; // Return empty object on error
+        }
+    })();
+    window.standaloneTemplateModule = groupsortTemplate;
+    console.log("Embedded Template Module object for 'group-sort' assigned to window:", window.standaloneTemplateModule);
+    // --- End Embedded Template Code ---
+    
+        
+// --- Initialization Logic ---
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Standalone DOM loaded. Initializing activity...");
+    const activityHostElement = document.getElementById('standalone-activity');
+    let state = null;
+    const templateId = 'group-sort';
+    const mode = undefined;
+    const actionModule = window.standaloneTemplateModule; // Use the exposed object
+
+    // --- Basic Sanity Checks ---
+    if (!activityHostElement) { /* ... */ return; }
+    if (!actionModule || typeof actionModule.addInteractivity !== 'function') { /* ... */ return; }
+    try { state = JSON.parse(`{"categories":[{"id":"cat-0","name":"Countable"},{"id":"cat-1","name":"Uncountable"},{"id":"cat-2","name":"I dont know"}],"items":[{"id":"item-0","text":"sofa","categoryId":"cat-0"},{"id":"item-1","text":"coffee table","categoryId":"cat-0"},{"id":"item-2","text":"television","categoryId":"cat-0"},{"id":"item-3","text":"fridge","categoryId":"cat-0"},{"id":"item-4","text":"stove","categoryId":"cat-0"},{"id":"item-5","text":"microwave","categoryId":"cat-0"},{"id":"item-6","text":"bed","categoryId":"cat-0"},{"id":"item-7","text":"wardrobe","categoryId":"cat-0"},{"id":"item-8","text":"sink","categoryId":"cat-0"},{"id":"item-9","text":"toilet","categoryId":"cat-0"},{"id":"item-10","text":"card","categoryId":"cat-0"},{"id":"item-11","text":"lipstick","categoryId":"cat-0"},{"id":"item-12","text":"milk","categoryId":"cat-1"},{"id":"item-13","text":"oil","categoryId":"cat-1"},{"id":"item-14","text":"butter","categoryId":"cat-1"},{"id":"item-15","text":"rice","categoryId":"cat-1"},{"id":"item-16","text":"sugar","categoryId":"cat-1"},{"id":"item-17","text":"salt","categoryId":"cat-1"},{"id":"item-18","text":"pepper","categoryId":"cat-1"},{"id":"item-19","text":"bread","categoryId":"cat-1"},{"id":"item-20","text":"cheese","categoryId":"cat-1"},{"id":"item-21","text":"flour","categoryId":"cat-1"},{"id":"item-22","text":"meat","categoryId":"cat-1"},{"id":"item-23","text":"furniture","categoryId":"cat-1"},{"id":"item-24","text":"clothing","categoryId":"cat-1"},{"id":"item-25","text":"electricity","categoryId":"cat-1"},{"id":"item-26","text":"garbage","categoryId":"cat-1"},{"id":"item-27","text":"noise","categoryId":"cat-1"},{"id":"item-28","text":"rain","categoryId":"cat-1"},{"id":"item-29","text":"sunshine","categoryId":"cat-1"},{"id":"item-30","text":"air","categoryId":"cat-1"},{"id":"item-31","text":"wind","categoryId":"cat-1"},{"id":"item-32","text":"gold","categoryId":"cat-1"},{"id":"item-33","text":"silver","categoryId":"cat-1"},{"id":"item-34","text":"money","categoryId":"cat-1"},{"id":"item-35","text":"^.^","categoryId":"cat-2"}]}`); } catch (parseError) { /* ... */ return; }
+    if (!state) { /* ... */ return; }
+
+    // --- Initialize Interactivity ---
+    try {
+        actionModule.addInteractivity(activityHostElement, state, mode);
+        console.log(`[Init Success] Standalone interactivity added for '${templateId}' with mode:`, mode);
+    } catch (initError) { /* ... */ return; }
+
+    // --- Attach Listener & Enable Buttons ---
+    const actionsContainer = activityHostElement.querySelector('.standalone-actions');
+    if (actionsContainer) {
+        console.log("[Init] Found actions container:", actionsContainer);
+
+        // --- Enable buttons *after* interactivity is added ---
+        console.log("[Init] Attempting to enable action buttons...");
+        let buttonsFound = 0;
+        actionsContainer.querySelectorAll('button.action-button').forEach(btn => {
+            if (btn.classList.contains('action-' + templateId)) {
+                const btnId = btn.id || 'no-id';
+                 btn.removeAttribute('disabled');
+                 console.log(`[Init] Enabled button: ${btnId}`);
+                 buttonsFound++;
+            } else { /* ... log skipping ... */ }
+        });
+         if (buttonsFound === 0) { /* ... warn no buttons found ... */ }
+
+        // --- Action Button Listeners ---
+         actionsContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('button.action-button');
+            if (!button) return;
+            if (button.hasAttribute('disabled')) { /* ... log disabled click ... */ return; }
+
+            const buttonId = button.id ? button.id.toLowerCase() : '';
+            console.log(`[Click] Action button clicked: ID='${buttonId}'`);
+
+            try {
+                let actionHandled = false;
+
+                // Check/Show/Toggle Handlers
+                if (buttonId.includes('checkanswersbtn') && typeof actionModule.checkAnswers === 'function') { /* ... call checkAnswers ... */ actionHandled = true; }
+                else if (buttonId.includes('showanswersbtn') && typeof actionModule.showAnswers === 'function') { /* ... call showAnswers, disable button ... */ actionHandled = true; }
+                else if (buttonId.includes('togglequizviewbtn') && templateId === 'quiz') { /* ... quiz toggle logic ... */ actionHandled = true; }
+                // Anagram Rescramble
+                else if (buttonId.includes('rescramblebtn') && templateId === 'anagram' && typeof actionModule.rescramble === 'function') { /* ... call rescramble, enable buttons ... */ actionHandled = true; }
+                // Unjumble Re-jumble
+                else if (buttonId.includes('rejumblebtn') && templateId === 'unjumble' && typeof actionModule.rejumble === 'function') { /* ... call rejumble, enable buttons ... */ actionHandled = true; }
+                 // Matching Pairs / Open Box Reset
+                else if (buttonId.includes('resetbtn') && typeof actionModule.resetActivity === 'function') { /* ... call resetActivity, enable buttons ... */ actionHandled = true; }
+                // Wordsearch "Repuzzle"
+                 else if (buttonId.includes('repuzzlebtn') && templateId === 'wordsearch') { /* ... wordsearch repuzzle logic ... */ actionHandled = true; }
+                 // Wordsearch "Toggle List"
+                 else if (buttonId.includes('wordsearch-toggle-btn') && templateId === 'wordsearch') { /* ... wordsearch toggle list logic ... */ actionHandled = true; }
+
+                if (!actionHandled) { console.warn(`[Action Warn] No handler for button ID: ${buttonId}`); }
+
+            } catch(actionError) { console.error(`[Action Error] Error executing action for ${buttonId}:`, actionError); }
+         });
+         console.log("[Init Success] Standalone action button listeners attached.");
+
+    } else { console.warn("[Init Warn] Standalone actions container not found."); }
+});
+// --- End Initialization Logic ---
+
+    </script>
+
+</body>
+</html>
