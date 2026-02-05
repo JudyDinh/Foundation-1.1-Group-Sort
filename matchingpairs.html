@@ -9,7 +9,11 @@
     <script>
         tailwind.config = {"theme":{"extend":{"colors":{"primary":"#007AFF","secondary":"#34C759","accent":"#FF9500","destructive":"#FF3B30","macos_bg_light":"#F6F6F6","macos_bg_dark":"#2D2D2D","macos_secondary_bg_light":"#FFFFFF","macos_secondary_bg_dark":"#3C3C3C","macos_tertiary_bg_light":"#EFEFEF","macos_tertiary_bg_dark":"#232323","macos_label_light":"#000000","macos_label_dark":"#FFFFFF","macos_secondary_label_light":"rgba(60, 60, 67, 0.6)","macos_secondary_label_dark":"rgba(235, 235, 245, 0.6)","macos_separator_light":"rgba(60, 60, 67, 0.15)","macos_separator_dark":"rgba(84, 84, 88, 0.4)","macos_placeholder_light":"rgba(60, 60, 67, 0.3)","macos_placeholder_dark":"rgba(235, 235, 245, 0.3)","macos_control_bg_light":"#FFFFFF","macos_control_bg_dark":"#5A5A5A","macos_control_border_light":"#CCCCCC","macos_control_border_dark":"#4A4A4A"}}},"darkMode":"class"}
     </script>
-    <style> /* Ensure buttons are clickable */ .standalone-actions button { pointer-events: auto !important; } </style>
+    <style> /* Ensure buttons are clickable */ .standalone-actions button { pointer-events: auto !important; }.matchup-dropzone .matchup-definition {
+            width: 100%;
+            height: 100%;
+            border: none;
+        } </style>
 </head>
 <body class="p-4 sm:p-6 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
     <h1 class="text-2xl font-semibold text-center mb-4">Match Up</h1>
@@ -170,30 +174,32 @@ function generateHTML(pairs) {
     const shuffledDefinitions = shuffleArray([...definitions]);
 
     // --- Build Term Column ---
-    let termsHTML = '<div id="matchup-terms-list" class="matchup-column-style space-y-2">'; // Column for terms
-    pairs.forEach(pair => { // Iterate over pairs to get term text easily
+// 1. Terms: Changed min-h-[45px] to h-14 (fixed height)
+    let termsHTML = '<div id="matchup-terms-list" class="matchup-column-style space-y-2">';
+    pairs.forEach(pair => {
         termsHTML += `
-            <div class="matchup-term-only p-3 bg-macos_tertiary_bg_light dark:bg-macos_secondary_bg_dark rounded border border-macos_separator_light dark:border-macos_separator_dark min-h-[45px] flex items-center justify-between" data-pair-id="${pair.id}">
-                <span>${pair.term}</span>
-                <span class="matchup-term-status text-lg w-5 text-center shrink-0 ml-2"></span> <!-- ADDED STATUS SPAN -->
+            <div class="matchup-term-only p-3 bg-macos_tertiary_bg_light dark:bg-macos_secondary_bg_dark rounded border border-macos_separator_light dark:border-macos_separator_dark h-14 flex items-center justify-between" data-pair-id="${pair.id}">
+                <span class="truncate">${pair.term}</span>
+                <span class="matchup-term-status text-lg w-5 text-center shrink-0 ml-2"></span>
             </div>`;
     });
     termsHTML += '</div>';
 
     // --- Build Dropzone Column ---
-    let dropzonesHTML = '<div id="matchup-dropzone-list" class="matchup-column-style space-y-2">'; // List of dropzones
-    pairs.forEach(pair => {
-        dropzonesHTML += `<div class="matchup-dropzone border-2 border-dashed border-macos_control_border_light dark:border-macos_control_border_dark rounded min-h-[45px] flex items-center justify-center p-1" data-term-id="${pair.id}" aria-label="Drop area for term ${pair.term}"></div>`;
-    });
-    dropzonesHTML += '</div>';
+    let dropzonesHTML = '<div id="matchup-dropzone-list" class="matchup-column-style space-y-2">';
+                pairs.forEach(pair => {
+                    dropzonesHTML += `<div class="matchup-dropzone border-2 border-dashed border-macos_control_border_light dark:border-macos_control_border_dark rounded h-14 flex items-center justify-center p-0 overflow-hidden" data-term-id="${pair.id}" aria-label="Drop area"></div>`;
+                });
+                dropzonesHTML += '</div>';
 
 
     // --- Build Definition Column (Draggable Items) ---
-    let definitionsHTML = '<div id="matchup-definitions-list" class="matchup-column-style space-y-2">'; // Draggable definitions
+// 3. Definitions: Changed min-h-[45px] to h-14
+    let definitionsHTML = '<div id="matchup-definitions-list" class="matchup-column-style space-y-2">';
     shuffledDefinitions.forEach(definition => {
         definitionsHTML += `
-            <div class="matchup-definition bg-white dark:bg-gray-600 border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab select-none p-2 min-h-[45px] flex items-center" draggable="true" id="definition-${definition.id}" data-pair-id="${definition.id}" aria-grabbed="false">
-                ${definition.text}
+            <div class="matchup-definition bg-white dark:bg-gray-600 border border-macos_control_border_light dark:border-macos_control_border_dark rounded shadow-sm cursor-grab select-none p-2 h-14 flex items-center" draggable="true" id="definition-${definition.id}" data-pair-id="${definition.id}" aria-grabbed="false">
+                <span class="w-full text-center">${definition.text}</span>
             </div>`;
     });
     definitionsHTML += '</div>';
@@ -217,12 +223,18 @@ function generateHTML(pairs) {
 
     // Combine Grid AND Action Buttons into the main container
     // Main container needs flex-col to position buttons below grid
-    const finalHTML = `<div class="matchup-container flex flex-col flex-grow">${columnsHTML}${actionButtonsHTML}</div>`;
-
-    return {
-        html: finalHTML,
-        state: { pairs: pairs }
-    };
+    const finalHTML = `
+        <div class="matchup-container flex flex-col flex-grow">
+            <div class="matchup-grid-container grid grid-cols-3 gap-4 mb-6">
+                ${termsHTML}${dropzonesHTML}${definitionsHTML}
+            </div>
+            <div class="matchup-actions mt-auto pt-4 border-t border-macos_separator_light dark:border-macos_separator_dark flex flex-wrap justify-center gap-3">
+                 <button id="matchup-check-btn" class="px-4 py-1.5 text-sm bg-secondary text-white rounded-md shadow-sm hover:brightness-110">Check Answers</button>
+                 <button id="matchup-show-btn" class="px-4 py-1.5 text-sm bg-primary text-white rounded-md shadow-sm hover:brightness-110">Show Answers</button>
+            </div>
+        </div>`;
+    
+    return { html: finalHTML, state: { pairs: pairs } };
 }
 
 /**
@@ -231,37 +243,45 @@ function generateHTML(pairs) {
  * @param {object} state - The state object from generateHTML.
  */
 function addInteractivity(activityElement, state) {
-    console.log("[MatchUp AddInteractivity] Called with element:", activityElement, "and state:", state); // Log input
+                const definitionsContainer = activityElement.querySelector('#matchup-definitions-list');
+                const dropzones = activityElement.querySelectorAll('.matchup-dropzone');
+                const definitions = activityElement.querySelectorAll('.matchup-definition');
 
-    if (!activityElement) {
-        console.error("[MatchUp AddInteractivity] Error: activityElement is null or undefined.");
-        return;
-    }
-    if (!state || !state.pairs || state.pairs.length === 0) {
-         console.warn("[MatchUp AddInteractivity] Warning: Invalid or empty state provided.", state);
+                let draggedItem = null;
 
-    }
+                definitions.forEach(definition => {
+                    definition.addEventListener('dragstart', (e) => {
+                        draggedItem = e.target;
+                        e.dataTransfer.setData('text/plain', e.target.id);
+                        setTimeout(() => { e.target.classList.add('dragging'); }, 0);
+                    });
+                    definition.addEventListener('dragend', (e) => {
+                        e.target.classList.remove('dragging');
+                        draggedItem = null;
+                    });
+                });
 
+                dropzones.forEach(zone => {
+                    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+                    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+                    zone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        zone.classList.remove('drag-over');
+                        const id = e.dataTransfer.getData('text/plain');
+                        const item = document.getElementById(id);
+                        
+                        if (zone.children.length > 0) {
+                            definitionsContainer.appendChild(zone.children[0]);
+                        }
+                        zone.appendChild(item);
+                        item.classList.add('dropped');
+                    });
+                });
 
-    // Log the results of the selectors immediately
-    const definitionsContainer = activityElement.querySelector('#matchup-definitions-list');
-    const dropzones = activityElement.querySelectorAll('.matchup-dropzone');
-    const definitions = activityElement.querySelectorAll('.matchup-definition[draggable="true"]');
-
-    console.log("[MatchUp AddInteractivity] Selector results:");
-    console.log("  - definitionsContainer found:", definitionsContainer); // Should be an element or null
-    console.log(`  - dropzones found: ${dropzones.length}`); // Should be > 0
-    console.log(`  - draggable definitions found: ${definitions.length}`); // Should be > 0
-
-    // The check that was failing
-    if (!definitionsContainer || !dropzones.length || !definitions.length) {
-        console.error("[MatchUp AddInteractivity] Setup failed: One or more required elements were not found within activityElement. Check HTML structure and selectors.");
-        // Provide more detail on what failed:
-        if (!definitionsContainer) console.error("  - Reason: #matchup-definitions-list not found.");
-        if (!dropzones.length) console.error("  - Reason: No .matchup-dropzone elements found.");
-        if (!definitions.length) console.error("  - Reason: No .matchup-definition[draggable=\"true\"] elements found.");
-        return; // Stop execution
-    }
+                // Listeners for buttons
+                activityElement.querySelector('#matchup-check-btn').addEventListener('click', () => checkAnswers(activityElement, state));
+                activityElement.querySelector('#matchup-show-btn').addEventListener('click', () => showAnswers(activityElement, state));
+            }
 
     console.log("[MatchUp AddInteractivity] All required elements found. Proceeding with listener setup.");
 
